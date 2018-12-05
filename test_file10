@@ -1,0 +1,32 @@
+fonction main:
+	avance fois -- il faut pré ciser un nombre avant 'fois '
+
+	recu le avance -- une seule instrucion par ligne
+
+	recu le 4+ -- expression arithm é tique non correcte
+
+	couleur #1010EG -- pas au format hexad é cimal
+	couleur 3 fois
+
+	tortues 5 fois -- pas de 'fois ' sur le nombre de tortues
+
+	avance 4 fois @4 fois -- pas de 'fois ' apr ès le @ tortue
+
+	si 4: -- 4 n'est pas une condition valide
+		avance 3
+	fin si
+
+	avance 4 fois + 2 fois -- ça c'est pas valide
+
+	mur devant -- une condition n'a rien à faire ici
+
+	avance 0 xFF -- que des nombres en base 10
+
+	si mur devant: -- pas de 'fin si '
+		avance
+
+	fonct ion foo: -- une fonction n'a rien à foutre ici
+		avance
+	fin fonct ion
+
+fin fonction

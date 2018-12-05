@@ -79,10 +79,10 @@ using token = yy::Parser::token;
 "carapace"	{return token::CARAPACE;}
 "motif"		{return token::MOTIF;}
 
-"avancer"	{return token::AVANCER;}
-"reculer"	{return token::RECULER;}
-"sauter"	{return token::SAUTER;}
-"tourner"	{return token::TOURNER;}
+"avance"	{return token::AVANCER;}
+"recule"	{return token::RECULER;}
+"saute"		{return token::SAUTER;}
+"tourne"	{return token::TOURNER;}
 
 "fois"		{return token::FOIS;}
 
@@ -127,7 +127,7 @@ using token = yy::Parser::token;
 	{
 	
 }
-((" "|"\t")*(--(.*))?"\n")+	{
+((" "|"\t")*(--(.*))?"\n"(" "|"\t")*)+	{
     	loc->lines();
 	yylval->build<std::string>(yytext);
 	return token::NL;
@@ -135,6 +135,10 @@ using token = yy::Parser::token;
 
 (" "|"\t")+	{
 	return token::SPACE;
+}
+
+(" "|"\t")*	{
+	return token::SPACEUNNECESSARY;
 }
 
 .           {

@@ -54,6 +54,7 @@
 
 %token			DEUXPOINTS
 %token			SPACE
+%token			SPACEUNNECESSARY
 %token			FOIS
 
 %token			SI
@@ -95,36 +96,34 @@
 %precedence	NEG
 
 %%
-	
-fonction:
-	FONCTION SPACE MAIN DEUXPOINTS newLine contenu newLine FINFONCTION	{
-		std::cout << "main " << std::endl;
-	} newLine fonction
-	| FONCTION SPACE MAIN DEUXPOINTS newLine contenu newLine FINFONCTION newLine	{
+
+debut:
+	FONCTION SPACE MAIN DEUXPOINTS newLine contenu FINFONCTION	{
+		std::cout << "main sans rien après : " << std::endl;
+		YYACCEPT;
+	}
+	| FONCTION SPACE MAIN DEUXPOINTS newLine contenu FINFONCTION newLine	{
 		std::cout << "main : " << std::endl;
 		YYACCEPT;
+	} fonction
+	
+fonction:
+	/* empty */	{
+		std::cout << "no other fct than main";
 	}
-
-	| FONCTION SPACE NOMFONCTION DEUXPOINTS newLine contenu newLine FINFONCTION	{
+	| FONCTION SPACE NOMFONCTION DEUXPOINTS newLine contenu FINFONCTION newLine	{
 		std::cout << "fonction : " << $3 << std::endl;
-	} newLine fonction
-	| FONCTION SPACE NOMFONCTION DEUXPOINTS newLine contenu newLine FINFONCTION newLine	{
-		std::cout << "fonction : " << $3 << std::endl;
-		YYACCEPT;
-	}
-	| newLine	{
-		std::cout << "commentaire : >> " << std::endl;
-	}
+	} fonction
 
 newLine:
 	NL	{
-		std::cout << "newLine : >> " << $1 << std::endl;
+		std::cout << "com:" << $1 << std::endl;
 	}
 
 contenu:
-	| newLine	{
-		std::cout << "commentaire : >> " << std::endl;
-	} contenu
+	/* empty */	{
+		std::cout << "empty content >> " << std::endl;
+	}
 	| commande	{
 		std::cout << "cmd >> " << std::endl;
 	} newLine contenu
@@ -159,12 +158,12 @@ mouvement:
 	| SAUTER paramAction	{
 		std::cout << "sauter >> ";
 	}
-	| TOURNER directionHorizontale paramAction	{
+	| TOURNER SPACE directionHorizontale paramAction	{
 		std::cout << "tourner >> ";
 	}
 
 paramAction:
-	/*epsilon*/	{
+	/* empty */	{
 		std::cout << "pas de parametres >> ";
 	}
 	| SPACE operation	{
@@ -186,21 +185,21 @@ jardin:
 	}
 
 condition:
-	SI SPACE composanteCondition SPACE DEUXPOINTS newLine contenu newLine FINSI	{
+	SI SPACE composanteCondition DEUXPOINTS newLine contenu FINSI	{
 		std::cout << "si simple";
 	}
-	| SI SPACE composanteCondition SPACE DEUXPOINTS newLine contenu newLine SINON newLine contenu newLine FINSI	{
+	| SI SPACE composanteCondition DEUXPOINTS newLine contenu SINON DEUXPOINTS newLine contenu FINSI	{
 		std::cout << "si sinon";
 	}
 
 boucle:
-	TANTQUE SPACE composanteCondition DEUXPOINTS newLine contenu newLine FINTANTQUE	{
+	TANTQUE SPACE composanteCondition DEUXPOINTS newLine contenu FINTANTQUE	{
 		std::cout << "tant que";
 	}
-	| REPETE SPACE operation SPACE FOIS DEUXPOINTS newLine contenu newLine FINTANTQUE	{
-		std::cout << "repete fois";
+	| REPETE SPACE operation SPACE FOIS DEUXPOINTS newLine contenu FINREPETE	{
+		std::cout << "repete fois" << std::endl;
 	}
-	| REPETE SPACE operation DEUXPOINTS newLine contenu newLine FINTANTQUE	{
+	| REPETE SPACE operation DEUXPOINTS newLine contenu FINREPETE	{
 		std::cout << "repete sans fois";
 	}
 
@@ -258,7 +257,7 @@ directionVerticale:
 
 operation:
 	nombre {
-		std::cout << "nombre >> ";
+		/*std::cout << "nombre >> ";*/
 		$$ = $1;
 	}
 	| SUBS %prec NEG operation {
@@ -267,11 +266,11 @@ operation:
 	| PAR_OPEN operation PAR_CLOSE{
 		$$ = $2;
 	}
-	| operation MULT operation {
+	| nombre MULT operation {
 		$$ = $1 * $3;
 		//std::cout << "multiplication: ";
 	}
-	| operation DIV operation {
+	| nombre DIV operation {
 		if($3==0){
 			std::cout << "ERREUR : division par zéro!!!";
 			//YYERROR;
@@ -280,18 +279,18 @@ operation:
 			//std::cout << "division: ";
 		}
 	}
-	| operation ADD operation {
+	| nombre ADD operation {
 		$$ = $1 + $3;
 		//std::cout << "somme: ";
 	}
-	| operation SUBS operation {
+	| nombre SUBS operation {
 		$$ = $1 - $3;
 		//std::cout << "soustraction: ";
 	}
 
 nombre:
 	NUMBER {
-		std::cout << "entier: " << $1;
+		std::cout << "entier: " << $1 << std::endl;
 		$$ = $1;
 	}
     
