@@ -44,6 +44,7 @@
 
 %token			MUR
 %token			VIDE
+%token			NON
 
 %token			CARAPACE
 %token			MOTIF
@@ -106,6 +107,7 @@ debut:
 		std::cout << "main : " << std::endl;
 		YYACCEPT;
 	} fonction
+	| newLine	{} debut
 	
 fonction:
 	/* empty */	{
@@ -133,6 +135,23 @@ contenu:
 	| boucle	{
 		std::cout << "bcl >> " << std::endl;
 	} newLine contenu
+	| NOMFONCTION parametreFonction	{
+		std::cout << "appel fct >> " << std::endl;
+	} newLine contenu
+
+parametreFonction:
+	/* empty */	{
+		std::cout << "pas de param >> " << std::endl;
+	}
+	| SPACE HEXACOULEUR	{
+		std::cout << "param hexa >> " << std::endl;
+	} parametreFonction
+	| SPACE NUMEROTORTUE	{
+		std::cout << "param num tortue >> " << std::endl;
+	} parametreFonction
+	| SPACE operation	{
+		std::cout << "param ope >> " << std::endl;
+	} parametreFonction
 
 commande:
 	mouvement	{
@@ -178,6 +197,10 @@ paramAction:
 	| SPACE operation SPACE FOIS SPACE NUMEROTORTUE	{
 		std::cout << "parametre nombre fois numero tortue : " << $6 << " >> ";
 	}
+	| SPACE NUMEROTORTUE	{
+		std::cout << "parametre tortue : " << $2 << " >> ";
+	}
+
 
 jardin:
 	JARDIN SPACE FILE	{
@@ -204,17 +227,29 @@ boucle:
 	}
 
 composanteCondition:
-	MUR SPACE directionHorizontale	{
+	negation MUR SPACE conditionParametres		{}
+	| negation VIDE SPACE conditionParametres	{}
+
+conditionParametres:
+	directionHorizontale	{
 		std::cout << "mur dir horizontal >> ";
 	}
-	| MUR SPACE directionVerticale	{
+	| directionVerticale	{
 		std::cout << "mur dir verticale >> ";
 	}
-	| VIDE SPACE directionHorizontale	{
-		std::cout << "vide dir horizontal >> ";
+	| directionHorizontale SPACE NUMEROTORTUE	{
+		std::cout << "mur dir horizontal et tortue >> ";
 	}
-	| VIDE SPACE directionVerticale	{
-		std::cout << "vide dir verticale >> ";
+	| directionVerticale SPACE NUMEROTORTUE	{
+		std::cout << "mur dir verticale et tortue >> ";
+	}
+
+negation:
+	/* empty */	{
+		std::cout << "positif >> ";
+	}
+	| NON SPACE	{
+		std::cout << "negation >> ";
 	}
 
 
@@ -229,6 +264,9 @@ couleur:
 	}
 	| COULEUR SPACE MOTIF SPACE paramCouleur	{
 		std::cout << "couleur motif >> ";
+	}
+	| COULEUR SPACE paramCouleur	{
+		std::cout << "couleur rien donc carapace >> ";
 	}
 
 paramCouleur:

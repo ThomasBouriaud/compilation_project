@@ -92,6 +92,7 @@ using token = yy::Parser::token;
 
 "mur"		{return token::MUR;}
 "vide"		{return token::VIDE;}
+"pas de"	{return token::NON;}
 
 "si"		{return token::SI;}
 "sinon"		{return token::SINON;}
@@ -108,7 +109,7 @@ using token = yy::Parser::token;
 	return token::NOMFONCTION;
 }
 
-'"./"([%-9A-}])+'	{
+'(".")?"./"([%-9A-}])+'	{
 	yylval->build<std::string>(yytext);
 	return token::FILE;
 }
