@@ -8,5 +8,5 @@ fin fonction
 -- dans les arguments des actions / fonctions
 
 fonction bar:
-	saute $1 ∗ ( $2 + $3 )
+	saute $1*($2+$3)
 fin fonction
