@@ -6,7 +6,7 @@
 #include <QtGui>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QLayout>
-#include <vector>
+#include <map>
 
 class Jardin:public QWidget
 {

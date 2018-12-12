@@ -1,11 +1,11 @@
 #ifndef DRIVER_H
 #define DRIVER_H
 
-#include <map>
 #include <string>
 #include <QPoint>
 #include <QColor>
 #include <QSize>
+#include <map>
 
 class JardinRendering;
 

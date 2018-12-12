@@ -21,6 +21,7 @@
     
     #include "scanner.hh"
     #include "driver.hh"
+    #include <map>
 
     #undef  yylex
     #define yylex scanner.yylex
@@ -199,6 +200,10 @@ paramAction:
 		driver.m_map.insert(std::pair<std::string,float>(std::string("operation"),$2));
 		float nb = std::stof($4.substr(1));
 		driver.m_map.insert(std::pair<std::string,float>(std::string("numtortue"),nb));
+
+		std::map<std::string,float>::iterator it = driver.m_map.begin();
+		for (it=driver.m_map.begin(); it!=driver.m_map.end(); ++it)
+    			std::cout << it->first << " => " << it->second << '\n';
 	}
 	| SPACE operation SPACE FOIS SPACE NUMEROTORTUE	{
 		std::cout << "parametre nombre fois numero tortue : " << $6 << " >> ";
