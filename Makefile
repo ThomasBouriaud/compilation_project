@@ -403,9 +403,6 @@ compiler_moc_header_make_all: moc_jardinRendering.cpp moc_jardin.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_jardinRendering.cpp moc_jardin.cpp
 moc_jardinRendering.cpp: parser.hh \
-		stack.hh \
-		location.hh \
-		position.hh \
 		scanner.hh \
 		driver.hh \
 		tortue.hh \
@@ -417,9 +414,6 @@ moc_jardinRendering.cpp: parser.hh \
 moc_jardin.cpp: tortue.hh \
 		jardinRendering.hh \
 		parser.hh \
-		stack.hh \
-		location.hh \
-		position.hh \
 		scanner.hh \
 		driver.hh \
 		jardin.hh \
@@ -445,9 +439,6 @@ main.o: main.cc jardin.hh \
 		tortue.hh \
 		jardinRendering.hh \
 		parser.hh \
-		stack.hh \
-		location.hh \
-		position.hh \
 		scanner.hh \
 		driver.hh
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cc
@@ -455,9 +446,6 @@ main.o: main.cc jardin.hh \
 driver.o: driver.cc driver.hh \
 		jardinRendering.hh \
 		parser.hh \
-		stack.hh \
-		location.hh \
-		position.hh \
 		scanner.hh \
 		tortue.hh
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o driver.o driver.cc
@@ -467,9 +455,6 @@ tortue.o: tortue.cc tortue.hh
 
 jardinRendering.o: jardinRendering.cc jardinRendering.hh \
 		parser.hh \
-		stack.hh \
-		location.hh \
-		position.hh \
 		scanner.hh \
 		driver.hh \
 		tortue.hh
@@ -479,9 +464,6 @@ jardin.o: jardin.cc jardin.hh \
 		tortue.hh \
 		jardinRendering.hh \
 		parser.hh \
-		stack.hh \
-		location.hh \
-		position.hh \
 		scanner.hh \
 		driver.hh
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o jardin.o jardin.cc

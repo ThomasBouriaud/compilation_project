@@ -1,3 +1,11 @@
 fonction main:
-	avance 2 @1
+	recule 2 @0
+	tourne à droite
+	tourne à droite
+	tourne à gauche
+	avance 2 @0
+	tourne à gauche
+	tourne à gauche
+	tourne à gauche
+	tourne à droite
 fin fonction

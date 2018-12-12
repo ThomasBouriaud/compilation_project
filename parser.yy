@@ -33,7 +33,7 @@
 %token <std::string>	HEXACOULEUR
 %token <std::string>	FILE
 %token <std::string>	NUMEROTORTUE
-%token <int>			NUMBER
+%token <int>		NUMBER
 %token <std::string>	COMMENTAIRE
 %token <std::string>	NOMFONCTION
 
@@ -88,9 +88,11 @@
 %token		FIN
 %token		RESTE
 
-%type 		<float>	nombre
-%type 		<float>	operation
-%type 		<std::map<std::string, int>> paramAction
+%type 		<int>	nombre
+%type 		<int>	operation
+%type 		<int>	paramAction
+%type 		<int>	paramNumTortue
+%type 		<int>	directionHorizontale
 
 %right		EQU
 %right		SUBS ADD
@@ -121,12 +123,12 @@ fonction:
 	;
 newLine:
 	NL	{
-		std::cout << "com:" << $1 << std::endl;
+		/*std::cout << "com:" << $1 << std::endl;*/
 	}
 	;
 contenu:
 	/* empty */	{
-		std::cout << "empty content >> " << std::endl;
+		std::cout << "fin du main >> " << std::endl;
 	}
 	| commande	{
 		std::cout << "cmd >> " << std::endl;
@@ -170,51 +172,57 @@ commande:
 	}
 	;
 mouvement:
-	AVANCER paramAction	{
-		std::cout << "avancer >> ";
+	AVANCER paramAction paramNumTortue	{
+		if($3 == -1){
+			driver.avancer($2);
+			std::cout << "avancer de " << $2 << " sur toutes les tortues! ";
+		} else{
+			driver.avancer($3, $2);
+			std::cout << "avancer de " << $2 << " sur la tortue:" << $3 << "! ";
+		}
 	}
-	| RECULER paramAction	{
+	| RECULER paramAction paramNumTortue	{
 		std::cout << "reculer >> ";
+		
+		if($3 == -1){
+			driver.reculer($2);
+			std::cout << "recule de " << $2 << " sur toutes les tortues! ";
+		} else{
+			driver.reculer($3, $2);
+			std::cout << "recule de " << $2 << " sur la tortue:" << $3 << "! ";
+		}
+		
 	}
-	| SAUTER paramAction	{
+	| SAUTER paramAction paramNumTortue	{
 		std::cout << "sauter >> ";
 	}
-	| TOURNER SPACE directionHorizontale paramAction	{
+	| TOURNER SPACE directionHorizontale paramAction paramNumTortue	{
 		std::cout << "tourner >> ";
+		if($5 == -1){
+			driver.tourner($4, $3);
+		} else{
+			driver.tourner($5, $4, $3);
+		}
 	}
 	;
 paramAction:
 	/* empty */	{
 		std::cout << "pas de parametres >> ";
+		$$=1;
 	}
 	| SPACE operation	{
 		std::cout << "parametre nombre >> ";
-		driver.m_map.insert(std::pair<std::string,float>(std::string("operation"),$2));
+		$$=$2;
 	}
-	| SPACE operation SPACE FOIS	{
-		std::cout << "parametre fois >> ";
-		driver.m_map.insert(std::pair<std::string,float>(std::string("operation"),$2));
-	}
-	| SPACE operation SPACE NUMEROTORTUE	{
-		std::cout << "parametre nombre numero tortue : " << $4 << " >> ";
-		driver.m_map.insert(std::pair<std::string,float>(std::string("operation"),$2));
-		float nb = std::stof($4.substr(1));
-		driver.m_map.insert(std::pair<std::string,float>(std::string("numtortue"),nb));
+	;
 
-		std::map<std::string,float>::iterator it = driver.m_map.begin();
-		for (it=driver.m_map.begin(); it!=driver.m_map.end(); ++it)
-    			std::cout << it->first << " => " << it->second << '\n';
-	}
-	| SPACE operation SPACE FOIS SPACE NUMEROTORTUE	{
-		std::cout << "parametre nombre fois numero tortue : " << $6 << " >> ";
-		driver.m_map.insert(std::pair<std::string,float>(std::string("operation"),$2));
-		float nb = std::stof($6.substr(1));
-		driver.m_map.insert(std::pair<std::string,float>(std::string("numtortue"),nb));
+paramNumTortue:
+	/* empty */	{
+		std::cout << "pas de tortue >> ";
+		$$=-1;
 	}
 	| SPACE NUMEROTORTUE	{
-		std::cout << "parametre tortue : " << $2 << " >> ";
-		float nb = std::stof($2.substr(1));
-		driver.m_map.insert(std::pair<std::string,float>(std::string("numtortue"),nb));
+		$$=std::atoi(($2.substr(1)).c_str());
 	}
 	;
 
@@ -296,9 +304,11 @@ paramCouleur:
 directionHorizontale:
 	DIRECTIONGAUCHE	{
 		std::cout << "direction gauche";
+		$$=-1;
 	}
 	| DIRECTIONDROITE	{
 		std::cout << "direction droite";
+		$$=1;
 	}
 	;
 directionVerticale:
@@ -348,6 +358,7 @@ nombre:
 		$$ = $1;
 	}
     	;
+
 %%
 
 void yy::Parser::error( const location_type &l, const std::string & err_msg) {

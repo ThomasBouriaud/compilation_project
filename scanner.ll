@@ -115,7 +115,7 @@ using token = yy::Parser::token;
 }
 
 
-("@"[1-9]([0-9])*)	{
+("@"[0-9]([0-9])*)	{
 	yylval->build<std::string>(yytext);
 	return token::NUMEROTORTUE;
 }
