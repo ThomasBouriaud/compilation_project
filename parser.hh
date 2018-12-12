@@ -289,8 +289,6 @@ namespace yy {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
-      // REAL
-      // assignation
       // operation
       // nombre
       char dummy1[sizeof(float)];
@@ -298,8 +296,16 @@ namespace yy {
       // NUMBER
       char dummy2[sizeof(int)];
 
-      // VAR
-      char dummy3[sizeof(std::string)];
+      // paramAction
+      char dummy3[sizeof(std::map<std::string, int>)];
+
+      // NL
+      // HEXACOULEUR
+      // FILE
+      // NUMEROTORTUE
+      // COMMENTAIRE
+      // NOMFONCTION
+      char dummy4[sizeof(std::string)];
 };
 
     /// Symbol semantic values.
@@ -323,19 +329,52 @@ namespace yy {
       enum yytokentype
       {
         NL = 258,
-        NUMBER = 259,
-        REAL = 260,
-        VAR = 261,
-        ADD = 262,
-        SUBS = 263,
-        MULT = 264,
-        DIV = 265,
-        EQU = 266,
-        PAR_OPEN = 267,
-        PAR_CLOSE = 268,
-        FIN = 269,
-        RESTE = 270,
-        NEG = 271
+        HEXACOULEUR = 259,
+        FILE = 260,
+        NUMEROTORTUE = 261,
+        NUMBER = 262,
+        COMMENTAIRE = 263,
+        NOMFONCTION = 264,
+        DIRECTIONGAUCHE = 265,
+        DIRECTIONDROITE = 266,
+        DIRECTIONDEVANT = 267,
+        DIRECTIONDERRIERE = 268,
+        MUR = 269,
+        VIDE = 270,
+        NON = 271,
+        CARAPACE = 272,
+        MOTIF = 273,
+        JARDIN = 274,
+        COULEUR = 275,
+        TORTUES = 276,
+        DEUXPOINTS = 277,
+        SPACE = 278,
+        SPACEUNNECESSARY = 279,
+        FOIS = 280,
+        SI = 281,
+        SINON = 282,
+        FINSI = 283,
+        TANTQUE = 284,
+        FINTANTQUE = 285,
+        REPETE = 286,
+        FINREPETE = 287,
+        AVANCER = 288,
+        RECULER = 289,
+        SAUTER = 290,
+        TOURNER = 291,
+        MAIN = 292,
+        FONCTION = 293,
+        FINFONCTION = 294,
+        ADD = 295,
+        SUBS = 296,
+        MULT = 297,
+        DIV = 298,
+        EQU = 299,
+        PAR_OPEN = 300,
+        PAR_CLOSE = 301,
+        FIN = 302,
+        RESTE = 303,
+        NEG = 304
       };
     };
 
@@ -376,6 +415,8 @@ namespace yy {
   basic_symbol (typename Base::kind_type t, const float v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const int v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const std::map<std::string, int> v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
 
@@ -448,7 +489,19 @@ namespace yy {
     // Symbol constructors declarations.
     static inline
     symbol_type
-    make_NL (const location_type& l);
+    make_NL (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_HEXACOULEUR (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_FILE (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_NUMEROTORTUE (const std::string& v, const location_type& l);
 
     static inline
     symbol_type
@@ -456,11 +509,131 @@ namespace yy {
 
     static inline
     symbol_type
-    make_REAL (const float& v, const location_type& l);
+    make_COMMENTAIRE (const std::string& v, const location_type& l);
 
     static inline
     symbol_type
-    make_VAR (const std::string& v, const location_type& l);
+    make_NOMFONCTION (const std::string& v, const location_type& l);
+
+    static inline
+    symbol_type
+    make_DIRECTIONGAUCHE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_DIRECTIONDROITE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_DIRECTIONDEVANT (const location_type& l);
+
+    static inline
+    symbol_type
+    make_DIRECTIONDERRIERE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_MUR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_VIDE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_NON (const location_type& l);
+
+    static inline
+    symbol_type
+    make_CARAPACE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_MOTIF (const location_type& l);
+
+    static inline
+    symbol_type
+    make_JARDIN (const location_type& l);
+
+    static inline
+    symbol_type
+    make_COULEUR (const location_type& l);
+
+    static inline
+    symbol_type
+    make_TORTUES (const location_type& l);
+
+    static inline
+    symbol_type
+    make_DEUXPOINTS (const location_type& l);
+
+    static inline
+    symbol_type
+    make_SPACE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_SPACEUNNECESSARY (const location_type& l);
+
+    static inline
+    symbol_type
+    make_FOIS (const location_type& l);
+
+    static inline
+    symbol_type
+    make_SI (const location_type& l);
+
+    static inline
+    symbol_type
+    make_SINON (const location_type& l);
+
+    static inline
+    symbol_type
+    make_FINSI (const location_type& l);
+
+    static inline
+    symbol_type
+    make_TANTQUE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_FINTANTQUE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_REPETE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_FINREPETE (const location_type& l);
+
+    static inline
+    symbol_type
+    make_AVANCER (const location_type& l);
+
+    static inline
+    symbol_type
+    make_RECULER (const location_type& l);
+
+    static inline
+    symbol_type
+    make_SAUTER (const location_type& l);
+
+    static inline
+    symbol_type
+    make_TOURNER (const location_type& l);
+
+    static inline
+    symbol_type
+    make_MAIN (const location_type& l);
+
+    static inline
+    symbol_type
+    make_FONCTION (const location_type& l);
+
+    static inline
+    symbol_type
+    make_FINFONCTION (const location_type& l);
 
     static inline
     symbol_type
@@ -580,14 +753,14 @@ namespace yy {
   static const signed char yypgoto_[];
 
   // YYDEFGOTO[NTERM-NUM].
-  static const signed char yydefgoto_[];
+  static const short int yydefgoto_[];
 
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
   static const unsigned char yytable_[];
 
-  static const signed char yycheck_[];
+  static const short int yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -605,7 +778,7 @@ namespace yy {
     static const char* const yytname_[];
 
   // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-  static const unsigned char yyrline_[];
+  static const unsigned short int yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
@@ -704,12 +877,12 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 42,     ///< Last index in yytable_.
-      yynnts_ = 7,  ///< Number of nonterminal symbols.
-      yyfinal_ = 16, ///< Termination state number.
+      yylast_ = 146,     ///< Last index in yytable_.
+      yynnts_ = 32,  ///< Number of nonterminal symbols.
+      yyfinal_ = 6, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 17  ///< Number of tokens.
+      yyntokens_ = 50  ///< Number of tokens.
     };
 
 
@@ -721,7 +894,7 @@ namespace yy {
 
 
 } // yy
-#line 725 "parser.hh" // lalr1.cc:377
+#line 898 "parser.hh" // lalr1.cc:377
 
 
 

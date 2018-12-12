@@ -18,7 +18,6 @@
 
 %code{
     #include <iostream>
-    #include <string>
     
     #include "scanner.hh"
     #include "driver.hh"
@@ -33,7 +32,7 @@
 %token <std::string>	HEXACOULEUR
 %token <std::string>	FILE
 %token <std::string>	NUMEROTORTUE
-%token <int>		NUMBER
+%token <int>			NUMBER
 %token <std::string>	COMMENTAIRE
 %token <std::string>	NOMFONCTION
 
@@ -88,8 +87,9 @@
 %token		FIN
 %token		RESTE
 
-%type <float>	nombre
-%type <float>	operation
+%type 		<float>	nombre
+%type 		<float>	operation
+%type 		<std::map<std::string, int>> paramAction
 
 %right		EQU
 %right		SUBS ADD
@@ -108,6 +108,7 @@ debut:
 		YYACCEPT;
 	} fonction
 	| newLine	{} debut
+	;
 	
 fonction:
 	/* empty */	{
@@ -116,12 +117,12 @@ fonction:
 	| FONCTION SPACE NOMFONCTION DEUXPOINTS newLine contenu FINFONCTION newLine	{
 		std::cout << "fonction : " << $3 << std::endl;
 	} fonction
-
+	;
 newLine:
 	NL	{
 		std::cout << "com:" << $1 << std::endl;
 	}
-
+	;
 contenu:
 	/* empty */	{
 		std::cout << "empty content >> " << std::endl;
@@ -138,7 +139,7 @@ contenu:
 	| NOMFONCTION parametreFonction	{
 		std::cout << "appel fct >> " << std::endl;
 	} newLine contenu
-
+	;
 parametreFonction:
 	/* empty */	{
 		std::cout << "pas de param >> " << std::endl;
@@ -152,7 +153,7 @@ parametreFonction:
 	| SPACE operation	{
 		std::cout << "param ope >> " << std::endl;
 	} parametreFonction
-
+	;
 commande:
 	mouvement	{
 		std::cout << "mouvement >> ";
@@ -166,7 +167,7 @@ commande:
 	| jardin	{
 		std::cout << "jardin >> ";
 	}
-
+	;
 mouvement:
 	AVANCER paramAction	{
 		std::cout << "avancer >> ";
@@ -180,33 +181,43 @@ mouvement:
 	| TOURNER SPACE directionHorizontale paramAction	{
 		std::cout << "tourner >> ";
 	}
-
+	;
 paramAction:
 	/* empty */	{
 		std::cout << "pas de parametres >> ";
 	}
 	| SPACE operation	{
 		std::cout << "parametre nombre >> ";
+		driver.m_map.insert(std::pair<std::string,float>(std::string("operation"),$2));
 	}
 	| SPACE operation SPACE FOIS	{
 		std::cout << "parametre fois >> ";
+		driver.m_map.insert(std::pair<std::string,float>(std::string("operation"),$2));
 	}
 	| SPACE operation SPACE NUMEROTORTUE	{
 		std::cout << "parametre nombre numero tortue : " << $4 << " >> ";
+		driver.m_map.insert(std::pair<std::string,float>(std::string("operation"),$2));
+		float nb = std::stof($4.substr(1));
+		driver.m_map.insert(std::pair<std::string,float>(std::string("numtortue"),nb));
 	}
 	| SPACE operation SPACE FOIS SPACE NUMEROTORTUE	{
 		std::cout << "parametre nombre fois numero tortue : " << $6 << " >> ";
+		driver.m_map.insert(std::pair<std::string,float>(std::string("operation"),$2));
+		float nb = std::stof($6.substr(1));
+		driver.m_map.insert(std::pair<std::string,float>(std::string("numtortue"),nb));
 	}
 	| SPACE NUMEROTORTUE	{
 		std::cout << "parametre tortue : " << $2 << " >> ";
+		float nb = std::stof($2.substr(1));
+		driver.m_map.insert(std::pair<std::string,float>(std::string("numtortue"),nb));
 	}
-
+	;
 
 jardin:
 	JARDIN SPACE FILE	{
 		std::cout << "jardin file:" << $3;
 	}
-
+	;
 condition:
 	SI SPACE composanteCondition DEUXPOINTS newLine contenu FINSI	{
 		std::cout << "si simple";
@@ -214,7 +225,7 @@ condition:
 	| SI SPACE composanteCondition DEUXPOINTS newLine contenu SINON DEUXPOINTS newLine contenu FINSI	{
 		std::cout << "si sinon";
 	}
-
+	;
 boucle:
 	TANTQUE SPACE composanteCondition DEUXPOINTS newLine contenu FINTANTQUE	{
 		std::cout << "tant que";
@@ -225,11 +236,11 @@ boucle:
 	| REPETE SPACE operation DEUXPOINTS newLine contenu FINREPETE	{
 		std::cout << "repete sans fois";
 	}
-
+	;
 composanteCondition:
 	negation MUR SPACE conditionParametres		{}
 	| negation VIDE SPACE conditionParametres	{}
-
+	;
 conditionParametres:
 	directionHorizontale	{
 		std::cout << "mur dir horizontal >> ";
@@ -243,7 +254,7 @@ conditionParametres:
 	| directionVerticale SPACE NUMEROTORTUE	{
 		std::cout << "mur dir verticale et tortue >> ";
 	}
-
+	;
 negation:
 	/* empty */	{
 		std::cout << "positif >> ";
@@ -251,13 +262,13 @@ negation:
 	| NON SPACE	{
 		std::cout << "negation >> ";
 	}
-
+	;
 
 nombreTortues:
 	TORTUES SPACE operation	{
 		std::cout << "nb tortue";
 	}
-
+	;
 couleur:
 	COULEUR SPACE CARAPACE SPACE paramCouleur	{
 		std::cout << "couleur carapace >> ";
@@ -268,7 +279,7 @@ couleur:
 	| COULEUR SPACE paramCouleur	{
 		std::cout << "couleur rien donc carapace >> ";
 	}
-
+	;
 paramCouleur:
 	HEXACOULEUR	{
 		std::cout << "paramcouleur hexa:" << $1;
@@ -276,7 +287,7 @@ paramCouleur:
 	| HEXACOULEUR SPACE NUMEROTORTUE	{
 		std::cout << "paramcouleur hexa:" << $1 << ", numero tortue:" << $3;
 	}
-
+	;
 directionHorizontale:
 	DIRECTIONGAUCHE	{
 		std::cout << "direction gauche";
@@ -284,7 +295,7 @@ directionHorizontale:
 	| DIRECTIONDROITE	{
 		std::cout << "direction droite";
 	}
-
+	;
 directionVerticale:
 	DIRECTIONDEVANT	{
 		std::cout << "direction devant";
@@ -292,7 +303,7 @@ directionVerticale:
 	| DIRECTIONDERRIERE	{
 		std::cout << "direction derriere";
 	}
-
+	;
 operation:
 	nombre {
 		/*std::cout << "nombre >> ";*/
@@ -325,13 +336,13 @@ operation:
 		$$ = $1 - $3;
 		//std::cout << "soustraction: ";
 	}
-
+	;
 nombre:
 	NUMBER {
 		std::cout << "entier: " << $1 << std::endl;
 		$$ = $1;
 	}
-    
+    	;
 %%
 
 void yy::Parser::error( const location_type &l, const std::string & err_msg) {

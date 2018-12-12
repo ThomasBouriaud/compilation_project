@@ -19,8 +19,10 @@ int main( int  argc, char* argv[]) {
     else{
         Jardin * J;
         QApplication app(argc,argv);
-        if (argc == 2) J = new Jardin(argv[1]);
-        else J = new Jardin;
+        if (argc == 2) 
+			J = new Jardin(argv[1]);
+        else 
+        	J = new Jardin;
         
         J->show();
 
