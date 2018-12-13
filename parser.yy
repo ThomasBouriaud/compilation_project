@@ -93,6 +93,7 @@
 %type 		<int>	paramAction
 %type 		<int>	paramNumTortue
 %type 		<int>	directionHorizontale
+%type 		<std::string> paramCouleur
 
 %right		EQU
 %right		SUBS ADD
@@ -195,6 +196,13 @@ mouvement:
 	}
 	| SAUTER paramAction paramNumTortue	{
 		std::cout << "sauter >> ";
+		if($3 == -1){
+			driver.sauter($2);
+			std::cout << "sauter de " << $2 << " sur toutes les tortues! ";
+		} else{
+			driver.sauter($3, $2);
+			std::cout << "sauter de " << $2 << " sur la tortue:" << $3 << "! ";
+		}
 	}
 	| TOURNER SPACE directionHorizontale paramAction paramNumTortue	{
 		std::cout << "tourner >> ";
@@ -283,22 +291,35 @@ nombreTortues:
 	}
 	;
 couleur:
-	COULEUR SPACE CARAPACE SPACE paramCouleur	{
+	COULEUR SPACE CARAPACE SPACE paramCouleur paramNumTortue	{
 		std::cout << "couleur carapace >> ";
+		if($6 == -1){
+			driver.modifCouleurCarapace($5);
+		} else{
+			driver.modifCouleurCarapace($6, $5);
+		}
+		
 	}
-	| COULEUR SPACE MOTIF SPACE paramCouleur	{
+	| COULEUR SPACE MOTIF SPACE paramCouleur paramNumTortue	{
 		std::cout << "couleur motif >> ";
+		if($6 == -1){
+			driver.modifCouleurCarapace($5);
+		} else{
+			driver.modifCouleurCarapace($6, $5);
+		}
 	}
-	| COULEUR SPACE paramCouleur	{
+	| COULEUR SPACE paramCouleur paramNumTortue	{
 		std::cout << "couleur rien donc carapace >> ";
+		if($4 == -1){
+			driver.modifCouleurCarapace($3);
+		} else{
+			driver.modifCouleurCarapace($4, $3);
+		}
 	}
 	;
 paramCouleur:
 	HEXACOULEUR	{
 		std::cout << "paramcouleur hexa:" << $1;
-	}
-	| HEXACOULEUR SPACE NUMEROTORTUE	{
-		std::cout << "paramcouleur hexa:" << $1 << ", numero tortue:" << $3;
 	}
 	;
 directionHorizontale:

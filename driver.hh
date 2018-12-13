@@ -35,8 +35,9 @@ public:
 	void modifCouleurMotif(std::string rgb);
 	void modifCouleurMotif(int numtortue, std::string rgb);
 	
-	void mur(int numtortue, float o);
-	void vide(int numtortue, float o);
+	bool mur(int numtortue, float o);
+	bool vide(int numtortue, float o);
+	bool vide(int numtortue, int x, int y);
 
 	void nombreTortue(int nb);
 	

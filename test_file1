@@ -1,11 +1,6 @@
 fonction main:
-	recule 2 @0
-	tourne à droite
-	tourne à droite
+	avance 40
 	tourne à gauche
-	avance 2 @0
-	tourne à gauche
-	tourne à gauche
-	tourne à gauche
-	tourne à droite
+	couleur carapace #aBcDeF
+	saute 2
 fin fonction

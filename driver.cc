@@ -1,6 +1,7 @@
 #include "driver.hh"
 #include "jardinRendering.hh"
 #include <iostream>
+#include <algorithm>
 
 Driver::Driver(JardinRendering * J) {
     monJardin = J;
@@ -36,8 +37,12 @@ void Driver::avancer(int numtortue, int x) {
 			posX = -1;
 			break;
 	}
-	monJardin->changePosition(numtortue, posX*x + t->getX(), posY*x + t->getY());
-	//std::cout << "Pos tortue(" << posX*x + t->getX() << "," << posY*x + t->getY() << ") orientation:" << monJardin->orientation(numtortue) << std::endl;
+	for(int i = 0; i < x; i++){
+		if(vide(numtortue, t->getOrientation())){
+			monJardin->changePosition(numtortue, posX*1 + t->getX(), posY*1 + t->getY());
+			std::cout << "Pos tortue(" << t->getX() << "," << t->getY() << ") orientation:" << monJardin->orientation(numtortue) << std::endl;
+		}
+	}
 }
 
 void Driver::reculer(int x) {
@@ -65,8 +70,14 @@ void Driver::reculer(int numtortue, int x) {
 			posX = 1;
 			break;
 	}
-	monJardin->changePosition(numtortue, posX*x + t->getX(), posY*x + t->getY());
-	//std::cout << "Pos tortue(" << posX*x + t->getX() << "," << posY*x + t->getY() << ") orientation:" << monJardin->orientation(numtortue) << std::endl;
+	int ori = int(t->getOrientation());
+	int derriere = ((ori-2)%4 + 4) % 4;
+	for(int i = 0; i < x; i++){
+		if(vide(numtortue, derriere)){
+			monJardin->changePosition(numtortue, posX*1 + t->getX(), posY*1 + t->getY());
+			//std::cout << "Pos tortue(" << t->getX() << "," << t->getY() << ") orientation:" << monJardin->orientation(numtortue) << std::endl;
+		}
+	}
 }
 
 void Driver::tourner(int x, float o) {
@@ -82,21 +93,134 @@ void Driver::tourner(int numtortue, int x, float o) {
 	monJardin->changeOrientation(numtortue, float(i_newOri));
 }
 
-void Driver::sauter(int x) {}
-void Driver::sauter(int numtortue, int x) {}
+bool Driver::mur(int numtortue, float o) {
+	Tortue* t = monJardin->getTortues().at(numtortue);
+	int dirX = 0;
+	int dirY = 0;
+	int posTortueX = t->getX();
+	int posTortueY = t->getY();
+	switch(int(o)) {
+		case 0:
+			dirY = -1;
+			break;
+		case 1:
+			dirX = 1;
+			break;
+		case 2:
+			dirY = 1;
+			break;
+		case 3:
+			dirX = -1;
+			break;
+	}
+	if(monJardin->estMur(posTortueX + dirX, posTortueY + dirY)){
+		return true;
+	}
+	return false;
+}
 
-void Driver::modifCouleurCarapace(std::string rgb){}
-void Driver::modifCouleurCarapace(int numtortue, std::string rgb){}
+bool Driver::vide(int numtortue, float o) {
+	Tortue* t = monJardin->getTortues().at(numtortue);
+	int dirX = 0;
+	int dirY = 0;
 
-void Driver::modifCouleurMotif(std::string rgb){}
-void Driver::modifCouleurMotif(int numtortue, std::string rgb){}
+	switch(int(o)) {
+		case 0:
+			dirY = -1;
+			break;
+		case 1:
+			dirX = 1;
+			break;
+		case 2:
+			dirY = 1;
+			break;
+		case 3:
+			dirX = -1;
+			break;
+	}
+	int posTortueX = t->getX() + dirX;
+	int posTortueY = t->getY() + dirY;
+	
+	return vide(numtortue, posTortueX, posTortueY);
+}
 
-void Driver::mur(int numtortue, float o){}
-void Driver::vide(int numtortue, float o){}
+bool Driver::vide(int numtortue, int x, int y) {
+	//std::cout << "vide: posX=" << posTortueX << ", posTortueY=" << posTortueY << std::endl;
+	int xMax = monJardin->tailleJardin().width();
+	int yMax = monJardin->tailleJardin().height();
+	//std::cout << "xMax=" << xMax << ", yMax=" << yMax << std::endl;
+	if((x < 0) || (x >= xMax) || (y < 0) || (y >= yMax)) {
+		return false;
+	}
+	if(monJardin->estMur(x, y)){
+		return false;
+	}
+	
+	for(size_t i = 0 ; i < monJardin->getTortues().size() ; i++) {
+		Tortue* t = monJardin->getTortues().at(i);
+		if((t->getX() == x) && (t->getY() == y)) {
+			return false;
+		}
+	}
+	return true;
+}
 
-void Driver::nombreTortue(int nb){}
 
-void Driver::newJardin(std::string file){}
+void Driver::sauter(int x) {
+	for(size_t i = 0 ; i < monJardin->getTortues().size() ; i++) {
+		sauter((int)i, x);
+	}
+}
+void Driver::sauter(int numtortue, int x) {
+	Tortue* t = monJardin->getTortues().at(numtortue);
+	int dirX = 0;
+	int dirY = 0;
+	int posX = t->getX();
+	int posY = t->getY();
+	int ori = (int)t->getOrientation();
+	switch(ori) {
+	case 0:
+		dirY = -1;
+		break;
+	case 1:
+		dirX = 1;
+		break;
+	case 2:
+		dirY = 1;
+		break;
+	case 3:
+		dirX = -1;
+		break;
+	}
+	if(vide(numtortue, posX+x*dirX, posY+x*dirY)){
+		std::cout << "YO, moi je suis en " << posX << " " << posY << " je me tp en " << posX+x*dirX << " " << posY+x*dirY << std::endl;
+		monJardin->changePosition(numtortue, posX+x*dirX, posY+x*dirY);
+		//std::cout << "Pos tortue(" << t->getX() << "," << t->getY() << ") orientation:" << monJardin->orientation(numtortue) << std::endl;
+	}
+}
+
+void Driver::modifCouleurCarapace(std::string rgb) {
+	for(size_t i = 0 ; i < monJardin->getTortues().size() ; i++) {
+		modifCouleurCarapace((int)i, rgb);
+	}
+}
+void Driver::modifCouleurCarapace(int numtortue, std::string rgb) {
+	std::string r1 = rgb.substr(1,1);
+	std::string r2 = rgb.substr(2,2);	
+	std::string g1 = rgb.substr(3,3);
+	std::string g2 = rgb.substr(4,4);	
+	std::string b1 = rgb.substr(5,5);
+	std::string b2 = rgb.substr(6,6);
+	std::cout << "Couleur = " << r1 << ", " << r2 << ", "<< g1 << ", "<< g2 << ", "<< b1 << ", "<< b2 << std::endl;
+	//couleurCarapace(numtortue, );
+}
+
+void Driver::modifCouleurMotif(std::string rgb) {}
+void Driver::modifCouleurMotif(int numtortue, std::string rgb) {}
+
+void Driver::nombreTortue(int nb) {}
+
+void Driver::newJardin(std::string file) {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
