@@ -1,6 +1,14 @@
 fonction main:
-	avance 40
-	tourne à gauche
-	couleur carapace #aBcDeF
+	recule
+	tourne à droite
+	avance 2
+	couleur carapace #ff0000
+	tourne à droite
 	saute 2
+	couleur motif #0000ff
+	tourne à droite
+	saute 2
+	couleur #00ff00
+	couleur carapace #0000ff
+	couleur motif #000000
 fin fonction

@@ -9,6 +9,11 @@
 
 class JardinRendering;
 
+struct coordonnee {
+	int x;
+	int y;
+};
+
 class Driver {
 private:      
     JardinRendering * monJardin;
@@ -16,6 +21,8 @@ private:
 public:
 	Driver(JardinRendering * J);
     ~Driver();
+    
+    coordonnee getXY(int orientation);
     
     void avancer(int x);
     void avancer(int numtortue, int x);
@@ -37,7 +44,9 @@ public:
 	
 	bool mur(int numtortue, float o);
 	bool vide(int numtortue, float o);
-	bool vide(int numtortue, int x, int y);
+	bool vide(int x, int y);
+	
+	int htoi(char s);
 
 	void nombreTortue(int nb);
 	

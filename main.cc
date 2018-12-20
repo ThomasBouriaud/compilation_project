@@ -10,8 +10,7 @@
 
 
 int main( int  argc, char* argv[]) {
-
-
+	
     if (argc > 2){
         std::cerr << "Trop d'arguments, format attendu ./tortue *jardin* < programme " << std::endl;
         return 0;
