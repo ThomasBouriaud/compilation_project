@@ -114,6 +114,10 @@ using token = yy::Parser::token;
 	return token::FILE;
 }
 
+("$"[1-9]([0-9])*)	{
+	yylval->build<std::string>(yytext);
+	return token::PARAM;
+}
 
 ("@"[0-9]([0-9])*)	{
 	yylval->build<std::string>(yytext);
